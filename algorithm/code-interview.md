@@ -39,18 +39,18 @@ int getAllNodeCount(Node node) {
 
 ```java
 public String reverseString(String str) {
-		StringBuffer sb = new StringBuffer();
-		char[] chs = str.toCharArray();
-		Stack stack = new Stack();
-		
-		for (char c : chs)
-			stack.push(c);
-		
-		while(!stack.isEmpty())
-			sb.append(stack.pop());
-		
-		return sb.toString();
-	}
+	StringBuffer sb = new StringBuffer();
+	char[] chs = str.toCharArray();
+	Stack stack = new Stack();
+
+	for (char c : chs)
+		stack.push(c);
+
+	while(!stack.isEmpty())
+		sb.append(stack.pop());
+
+	return sb.toString();
+}
 ```
 
 
@@ -65,27 +65,27 @@ public String reverseString(String str) {
 
 ```java
 public String compactString(String input) {
-		if (input.isEmpty()) {
-			return "";
-		}
-		
-		char[] chs = input.toCharArray();
-		char temp = chs[0];
-		int count = 0;
-		StringBuffer sb = new StringBuffer();
-				
-		for (char ch : chs) {
-			if (ch != temp) {
-				sb.append(temp).append(count);
-				count = 0;
-				temp = ch;
-			}
-			count++;
-		}
-		
-		sb.append(temp).append(count);
-		
-		return sb.toString();
+	if (input.isEmpty()) {
+		return "";
 	}
+
+	char[] chs = input.toCharArray();
+	char temp = chs[0];
+	int count = 0;
+	StringBuffer sb = new StringBuffer();
+
+	for (char ch : chs) {
+		if (ch != temp) {
+			sb.append(temp).append(count);
+			count = 0;
+			temp = ch;
+		}
+		count++;
+	}
+
+	sb.append(temp).append(count);
+
+	return sb.toString();
+}
 ```
 
