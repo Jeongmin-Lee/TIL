@@ -1,4 +1,4 @@
-# **Code-Interview 문제들 정리**
+# **간단한 알고리즘 문제들 정리**
 
 ### Binary Tree에서 최대 Depth 구하기
 Root노드 기준으로 좌측 노드들의 총 Depth와 우측 노드들의 총 Depth 중 가장 큰 값에 1을 더한 값
