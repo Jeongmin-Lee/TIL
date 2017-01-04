@@ -164,3 +164,25 @@ main/resource 밑에 각 환경에 따른 폴더와 파일을 생성해서 관�
 ```
 
 dev와 real 2개의 profile을 정한 후 maven-build configuration을 이용하여 maven build를 수행한다. Edit configuration의 Profile값에 빌드할 환경을 입력.
+
+
+## JDK Version
+```xml
+<plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-compiler-plugin</artifactId>
+    <version>3.6.0</version>
+    <configuration>
+        <source>1.8</source>
+        <target>1.8</target>
+    </configuration>
+</plugin>
+```
+
+default로 1.5로 잡힌다. 1.8로 하려면 위와같이 pom.xml을 수정
+
+or
+
+```
+mvn clean compile -Dmaven.compiler.source=1.8 -Dmaven.compiler.target=1.8
+```
