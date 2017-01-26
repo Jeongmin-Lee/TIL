@@ -138,7 +138,10 @@ class ConfigClass implement EnvironmentAware {
 그리고 ```PropertySourcePlaceHolderConfigurer``` 클래스를 static한 빈으로 등록
 
 ## Profile
-```@Profile("dev")```
+```java
+@Profile("dev")
+```
+
 
 xxx-dev.properties
 
