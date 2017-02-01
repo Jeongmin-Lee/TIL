@@ -122,9 +122,101 @@ aspect ref는 ```Profiler``` 클래스를 정의한 빈의 id.
 pointcut을 정할 때 expression을 활용해서 다양하게 적용할 수 있다.
 around의 method는 실제 적용될 메서드 (Profiler에서는 trace) 명을 지정하고 pointcut-ref는 pointcut의 id 입력
 
+##### Advice 타입 별 클래스 작성
+1. Before : ```pointcut-ref```, ```method="before"```, before() 메서드 정의, 파라메터는 ```JoinPoint```, 리턴타입은 ```void```
+2. After Returning : pointcut, method, 리턴받을 파라메터 지정 ```returning="ret"```, ```void afterReturing(Object ret)```, Object 대신 특정 타입 지정 가능, 정보 필요하면 ```JoinPoint``` 매개변수로 지정
+3. After Throwing : ```throwing="ex"``` 
+4. After : 리턴값은 void
+5. Around : 메서드 첫 파라미터는 반드시 ```ProceedingJoinPoint``` 선언
 
-## 설정
-### XML 설정
 
-## Annotation 설정
+호출되는 메서드에 대한 정보나 파라미터에 대한 정보가 필요하면 ```JoinPoint``` 를 파라미터로 명시한다.
 
+
+### 애노테이션 기반으로 구현하기
+1. @Aspect 애노테이션으로 Aspect클래스 구현
+2. XML설정이나 @Configuration 기반 설정에서 autoproxy 설정을 해줘야 한다
+
+#### 1. 애노테이션으로 Aspect클래스 구현
+위의 Profiler 클래스를 애노테이션 기반으로 구현한다.
+
+```java
+@Aspect
+public class Profiler {
+	
+	@Pointcut("execution(public * com.navercorp.test..*())")
+	private void profileTarget() {}
+	
+	@Around("profileTarget()")
+	public Object trace(ProceedingJoinPoint joinPoint) throws Throwable {
+		long start = System.currentTimeMillis();
+		System.out.println("시작");
+		try {
+			return joinPoint.proceed();
+		} finally {
+			System.out.println("종료");
+			long finish = System.currentTimeMillis();
+			System.out.println("실행시간 : " + (finish - start) + "ms");
+		}
+	}
+}
+```
+
+#### 2. autoproxy설정
+빈이 하나 이상의 관점으로 Advice가 되는지 스프링이 결정한다. 빈의 메서드 호출을 가로채고 필요할 때 Advice를 수행할 수 있도록 자동으로 프록시를 설정해야 한다.
+
+* XML기반
+	```xml
+	
+	<aop:aspectj-autoproxy />
+	```
+* Java Config기반
+	```java
+	
+	@EnableAspectJAutoProxy
+	```
+
+#### @Pointcut 이용한 Pointcut설정
+```java
+@Pointcut("execution(public * com..*(..))")
+private void pointcut() {}
+```
+* value로 pointcut 표현식을 사용
+* 적용된 메서드의 리턴타입은 ```void```
+* 메서드 내 코드는 없다. 있어도 무의미.
+* Advice의 pointcut-ref나 value에 정의된Pointcut메서드명이 포함된다.
+
+##### Pointcut Expression
+* execution(수식어패턴? 리턴타입패턴 클래스이름패턴?메서드이름패턴(파라미터패턴))
+* within : 특정 타입에 속하는 메서드. ex)```within(com.navercorp..*)```
+* bean : 빈 이름을 이용한 정의, ex) ```bean(readArticle)```, ```bean(*Article)```
+
+> ```and```, ```or```로 expression의 조합이 가능하다 
+> ```java
+> @AfterThrowing(pointcut="execution(public * get*()) and execution(public * set*())")
+> ```
+
+### Advice 적용 순서
+하나 이상의 Advice가 적용된 경우 순서를 명시할 수 있다. 방법은 2가지가 존재한다.
+
+* @Order
+* Ordered 인터페이스 구현
+
+#### @Order
+Aspect 클래스를 지정하기 위해 @Aspect를 적용하는데, 이 때 Order 애노테이션을 적용한다. 
+
+```java
+@Aspect
+@Order(2)
+public class LogginAspect {
+	...
+}
+```
+
+Order에 들어간 숫자는 순서 값. 낮을 수록 우선순위가 높다. (1이 2보다 먼저)
+
+> XML 에서도 적용 가능.
+> ```<aop:aspect id='xx' ... order="2">```
+
+#### Ordered 인터페이스 구현
+getOrder 메서드를 재정의하는데 메서드의 리턴값을 정의.
