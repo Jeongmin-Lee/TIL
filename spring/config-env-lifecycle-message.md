@@ -17,20 +17,21 @@ Java Code수정하지 않고 xml설정파일 추가하는 방법.
 ```
 
 ## Java Config 방식
-
-```@Configuration```, ```@Bean```
+@Configuration, @Bean
 
 
 ## XML + Java Config
 <context:annotation-config>
 
-```@ImportResource("classpath:config-xxx.xml")```
+@ImportResource("classpath:config-xxx.xml")
 
 ## 팩토리 방식 스프링 빈 설정
 
 FactoryBean<T> class를 implement해서 직접 빈을 어떻게 생성할지 정할 수 있다.
-```getObject()```
-```
+getObject()
+
+
+```java
 @Qualifier("stand")
 @Autowired
 @Inject
