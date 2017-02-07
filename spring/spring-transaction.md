@@ -77,17 +77,7 @@ execute 메서드로 처리할 로직들을 감싼다.
 
 TransactionTemplate의 트랜잭션 처리 과정은 다음과 같다.
 
-```sequence
-내 코드->TransactionTemplate:1.execute(action)
-TransactionTemplate->PlatformTransactionManager:2.getTransaction()
-PlatformTransactionManager-->status:
-PlatformTransactionManager-->TransactionTemplate:3.return status
-TransactionTemplate->TransactionCallback:4.doInTransaction(status)
-TransactionCallback-->TransactionTemplate:5.return result
-TransactionTemplate->PlatformTransactionManager:6.commit
-TransactionTemplate-->내 코드:7.return result
-
-```
+![transaction-flow.png](/spring/transaction-flow.png)
 
 만약 doInTransaction 내에서 익셉션일 발생하면 TransactionTemplate에서 PlatformTransactionManager의 rollback 시킨 후, TransactionTemplate의 execute 메서드를 호출한 코드에 익셉션 전달한다.
 
